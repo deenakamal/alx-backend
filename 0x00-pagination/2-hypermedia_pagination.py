@@ -39,15 +39,16 @@ class Server:
         return self.dataset()[start:end]
 
     def get_hyper(self, page: int = 1, page_size: int = 10) -> Dict:
-        """ Returns a dictionary containing the following key-value"""
-        start_idx, end_idx = index_range(page, page_size)
-        dataset_len = len(self.dataset())
+        """ Returns a dictionary containing the following key-value pairs"""
+        data = self.get_page(page, page_size)
+        total_items = len(self.dataset())
+        total_pages = math.ceil(total_items / page_size)
 
         return {
-            'page_size': page_size,
+            'page_size': len(data),  # Length of the data returned
             'page': page,
-            'data': self.get_page(page, page_size),
-            'next_page': page + 1 if end_idx < dataset_len else None,
-            'prev_page': page - 1 if start_idx > 0 else None,
-            'total_pages': math.ceil(dataset_len / page_size)
+            'data': data,
+            'next_page': page + 1 if page < total_pages else None,
+            'prev_page': page - 1 if page > 1 else None,
+            'total_pages': total_pages
         }
