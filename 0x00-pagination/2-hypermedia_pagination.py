@@ -2,10 +2,10 @@
 """Module"""
 import csv
 import math
-from typing import List, Dict
+from typing import List, Tuple, Dict
 
 
-def index_range(page: int, page_size: int) -> tuple:
+def index_range(page: int, page_size: int) -> Tuple[int, int]:
     """ func returns start and end index """
     start_index = (page - 1) * page_size
     end_index = start_index + page_size
@@ -39,16 +39,15 @@ class Server:
         return self.dataset()[start:end]
 
     def get_hyper(self, page: int = 1, page_size: int = 10) -> Dict:
-        """ Returns a dictionary containing the following key-value pairs"""
-        data = self.get_page(page, page_size)
-        total_items = len(self.dataset())
-        total_pages = math.ceil(total_items / page_size)
+        """Returns a dictionary containing the following key-value pairs"""
+        start_idx, end_idx = index_range(page, page_size)
+        dataset_len = len(self.dataset())
 
         return {
-            'page_size': len(data),
+            'page_size': page_size,
             'page': page,
-            'data': data,
-            'next_page': page + 1 if page < total_pages else None,
-            'prev_page': page - 1 if page > 1 else None,
-            'total_pages': total_pages
+            'data': self.get_page(page, page_size),
+            'next_page': page + 1 if end_idx < dataset_len else None,
+            'prev_page': page - 1 if start_idx > 0 else None,
+            'total_pages': math.ceil(dataset_len / page_size)
         }
