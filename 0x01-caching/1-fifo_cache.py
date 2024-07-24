@@ -23,9 +23,8 @@ class FIFOCache(BaseCaching):
         Args:
             key (str): The key to associate with the item.
             item (any): The value to store in the cache.
-        
         If the key or item is None, do nothing.
-        If the cache exceeds the maximum allowed items, 
+        If the cache exceeds the maximum allowed items,
         evicts the oldest item (FIFO) and prints a discard message.
         """
         if key is None or item is None:
@@ -48,9 +47,8 @@ class FIFOCache(BaseCaching):
         """ Retrieve an item from the cache
         Args:
             key (str): The key for the item to retrieve.
-        
         Returns:
-            The value associated with the key if it exists, 
+            The value associated with the key if it exists,
             otherwise returns None.
         """
         if key is None:
