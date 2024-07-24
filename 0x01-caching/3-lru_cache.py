@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
-"""Defines MRUCache class"""
+"""Defines LRUCache class"""
 
 from base_caching import BaseCaching
 
 
-class MRUCache(BaseCaching):
-    """Implement a Most Recently Used (MRU) cache system"""
+class LRUCache(BaseCaching):
+    """Implement an LRU (Least Recently Used) cache system"""
 
     def __init__(self):
-        """Initialize the MRUCache with an empty attribute for tracking the most recently used item"""
+        """Initialize the LRUCache with an empty access order list"""
         super().__init__()
-        self.most_recent_key = None
+        self.access_order = []
 
     def put(self, key, item):
-        """Add an item to the cache with MRU eviction policy
+        """Add an item to the cache with LRU eviction policy
 
-        If the cache exceeds its maximum size, the most recently used item
+        If the cache exceeds its maximum size, the least recently used item
         will be discarded.
 
         Args:
@@ -27,13 +27,18 @@ class MRUCache(BaseCaching):
         if key is None or item is None:
             return
 
-        if len(self.cache_data) >= self.MAX_ITEMS:
-            if self.most_recent_key is not None:
-                del self.cache_data[self.most_recent_key]
-                print(f"DISCARD: {self.most_recent_key}")
+        if key in self.cache_data:
+            self.cache_data[key] = item
+            self.access_order.remove(key)
+            self.access_order.append(key)
+        else:
+            if len(self.cache_data) >= self.MAX_ITEMS:
+                lru_key = self.access_order.pop(0)
+                del self.cache_data[lru_key]
+                print(f"DISCARD: {lru_key}")
 
-        self.cache_data[key] = item
-        self.most_recent_key = key
+            self.cache_data[key] = item
+            self.access_order.append(key)
 
     def get(self, key):
         """Retrieve an item from the cache
@@ -47,6 +52,7 @@ class MRUCache(BaseCaching):
         value = self.cache_data.get(key)
 
         if value is not None:
-            self.most_recent_key = key
+            self.access_order.remove(key)
+            self.access_order.append(key)
 
         return value
