@@ -59,7 +59,8 @@ class LFUCache(BaseCaching):
         return value
 
     def update_frequency_and_move_to_end(self, key):
-        """Update frequency of the key and move its corresponding tuple to the end
+        """Update frequency of the key and move,
+        its corresponding tuple to the end
 
         Args:
             key (str): The key for which the frequency needs to be updated.
