@@ -8,7 +8,10 @@ class MRUCache(BaseCaching):
     """Implement a Most Recently Used (MRU) cache system"""
 
     def __init__(self):
-        """Initialize the MRUCache with an empty attribute for tracking the most recently used item"""
+        """
+        Initialize the MRUCache with an empty attribute,
+        for tracking the most recently used item
+        """
         super().__init__()
         self.most_recent_key = None
 
