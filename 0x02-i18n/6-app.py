@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" Flask app """
+""" Module """
 from flask import Flask, render_template, request, g
 from flask_babel import Babel
 
@@ -26,7 +26,7 @@ users = {
 
 
 def get_user():
-    """ Get user """
+    """ detect if the incoming request contains locale argument  """
     try:
         return users.get(int(request.args.get('login_as')))
     except Exception:
@@ -35,13 +35,13 @@ def get_user():
 
 @app.before_request
 def before_request():
-    """ Before request """
+    """ Called Before request """
     g.user = get_user()
 
 
 @babel.localeselector
 def get_locale() -> str:
-    """ Get locale """
+    """ Get locale language"""
     locale = request.args.get('locale')
     if locale and locale in app.config['LANGUAGES']:
         return locale
@@ -52,10 +52,10 @@ def get_locale() -> str:
 
 @app.route('/', strict_slashes=False)
 def index() -> str:
-    """ Returns the index page """
+    """ Render index """
     username = g.user.get("name") if g.user else None
     return render_template('5-index.html', username=username)
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    app.run()
