@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
-"""Module"""
+""" Flask app """
 from flask import Flask, render_template, request, g
-from flask_babel import Babel, gettext as _
+from flask_babel import Babel
+
+app = Flask(__name__)
 
 
 class Config:
-    """Configuration class"""
+    """ Config class """
     LANGUAGES = ["en", "fr"]
-    BABEL_DEFAULT_LOCALE = "en"
     BABEL_DEFAULT_TIMEZONE = "UTC"
+    BABEL_DEFAULT_LOCALE = "en"
 
 
-app = Flask(__name__)
 babel = Babel(app)
 app.config.from_object(Config)
 
@@ -39,22 +40,22 @@ def before_request():
 
 
 @babel.localeselector
-def get_locale():
-    """Get the locale Languages"""
-    param = request.args.get("locale")
-    if param in app.config["LANGUAGES"]:
-        return param
+def get_locale() -> str:
+    """ Get locale """
+    locale = request.args.get('locale')
+    if locale and locale in app.config['LANGUAGES']:
+        return locale
     if g.user and g.user.get("locale") in app.config['LANGUAGES']:
         return g.user.get("locale")
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
-@app.route('/')
+@app.route('/', strict_slashes=False)
 def index() -> str:
-    """Render 3-index template """
+    """ Returns the index page """
     username = g.user.get("name") if g.user else None
-    return render_template('6-index.html', username=username)
+    return render_template('5-index.html', username=username)
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0', port=5000)
