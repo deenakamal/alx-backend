@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="eng">
+<html lang="en">
 <head>
-<title>{{ _('home_title') }}</title>
+    <meta charset="UTF-8">
+    <title>Welcome</title>
 </head>
 <body>
-    <h1>{{ _('home_header') }}</h1>
     <p>
         {% if username %}
-            {{ _('logged_in_as', username=username) }}
+            {{ _("You are logged in as %(username)s.", username=username) }}
         {% else %}
-            {{ _('not_logged_in') }}
+            {{ _("You are not logged in.") }}
         {% endif %}
     </p>
 </body>
