@@ -50,7 +50,7 @@ def get_locale():
 @app.route('/')
 def index() -> str:
     """Render 3-index template """
-    username = g.user.get("name") if g.user else None
+        username = g.user.get("name") if g.user else None
     return render_template('5-index.html', username=username)
 
 
