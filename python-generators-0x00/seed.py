@@ -67,15 +67,28 @@ def create_table(connection):
     
    
 def insert_data(connection, data):
-    """Inserts data in the database if doesn't exist"""
-    cursor = connection.cursor()
-    with open(data, newline='', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            cursor.execute(
-                "INSERT INTO user_data (user_id, name, email, age) VALUES (%s, %s, %s, %s)",
-                (str(uuid4()), row['name'], row['email'], row['age'])
-            )
-    connection.commit()
-    cursor.close()  
+    """Inserts data in the database if it doesn't exist (checked by email)."""
+    try:
+        cursor = connection.cursor()
+        with open(data, newline='', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                # Check if email already exists
+                cursor.execute("SELECT * FROM user_data WHERE email = %s", (row['email'],))
+                result = cursor.fetchone()
+                if result:
+                    print(f"Email {row['email']} already exists. Skipping...")
+                    continue  # Skip this row if email exists
+
+                # Insert new data
+                cursor.execute(
+                    "INSERT INTO user_data (user_id, name, email, age) VALUES (%s, %s, %s, %s)",
+                    (str(uuid4()), row['name'], row['email'], row['age'])
+                )
+            connection.commit()
+            print("Data insertion completed successfully.")
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+    finally:
+        cursor.close()
     
